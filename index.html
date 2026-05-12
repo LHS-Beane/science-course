@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Science Course Pathway Planner</title>
+  <style>
+    :root {
+      --bg:#f8fafc; --surface:#fff; --surface2:#f1f5f9; --surface3:#e2e8f0;
+      --text:#0f172a; --muted:#64748b; --border:#cbd5e1;
+      --blue:#2563eb; --blueSoft:#dbeafe; --blueLight:#eff6ff;
+      --green:#059669; --greenSoft:#d1fae5; --greenLight:#ecfdf5;
+      --amber:#d97706; --amberSoft:#fef3c7; --amberLight:#fffbeb;
+      --purple:#7c3aed; --purpleSoft:#ede9fe; --purpleLight:#f5f3ff;
+      --red:#dc2626; --redSoft:#fee2e2; --redLight:#fef2f2;
+      --shadow:0 8px 24px rgba(15,23,42,.08); --shadowLarge:0 22px 45px rgba(15,23,42,.16);
+      --radius:14px; --radiusLg:22px; --font:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;
+    }
+    @media (prefers-color-scheme: dark){:root{--bg:#0f172a;--surface:#1e293b;--surface2:#334155;--surface3:#475569;--text:#f8fafc;--muted:#cbd5e1;--border:#475569;--blueLight:#172554;--blueSoft:#1e3a8a;--greenLight:#052e2b;--greenSoft:#064e3b;--amberLight:#451a03;--amberSoft:#78350f;--purpleLight:#2e1065;--purpleSoft:#4c1d95;--redLight:#450a0a;--redSoft:#7f1d1d}}
+    *{box-sizing:border-box} body{margin:0;font-family:var(--font);background:radial-gradient(circle at top left,var(--blueLight),transparent 32rem),var(--bg);color:var(--text);line-height:1.55} button,input,select{font:inherit} button{cursor:pointer;border:0} h1,h2,h3,h4,p{margin:0}.wrap{max-width:1180px;margin:0 auto;padding:28px 18px 72px}.header{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:24px}.brand{display:flex;align-items:center;gap:12px}.brandIcon{width:52px;height:52px;border-radius:16px;background:linear-gradient(135deg,var(--blue),var(--purple));display:grid;place-items:center;color:#fff;font-size:26px;box-shadow:var(--shadow)}.brand h1{font-size:25px}.brand p{font-size:13px;color:var(--muted)}
+    .hero{display:grid;grid-template-columns:1.15fr .85fr;gap:22px;background:linear-gradient(135deg,var(--surface),var(--blueLight));border:1px solid var(--border);border-radius:var(--radiusLg);padding:36px;box-shadow:var(--shadow);margin-bottom:22px}.hero h2{font-size:clamp(32px,4vw,52px);line-height:1.05;margin-bottom:14px}.hero p{color:var(--muted);font-size:16px;margin-bottom:20px}.heroPanel{display:grid;gap:12px}.mini{background:rgba(255,255,255,.62);border:1px solid var(--border);border-radius:16px;padding:16px}.mini strong{display:block;margin-bottom:4px}.mini span{font-size:13px;color:var(--muted)}
+    .btn{border-radius:999px;padding:11px 18px;font-weight:750;background:var(--surface);color:var(--text);border:1px solid var(--border);display:inline-flex;align-items:center;justify-content:center;gap:8px;transition:.18s}.btn:hover{transform:translateY(-1px);box-shadow:var(--shadow);border-color:var(--blue)}.btn.primary{background:linear-gradient(135deg,var(--blue),var(--purple));color:white;border:0}.btn.secondary{background:var(--surface2)}.btn.ghost{background:transparent}.btn:disabled{opacity:.45;cursor:not-allowed;transform:none;box-shadow:none}.actions{display:flex;gap:10px;flex-wrap:wrap}.page{background:var(--surface);border:1px solid var(--border);border-radius:var(--radiusLg);padding:28px;box-shadow:var(--shadow);margin-bottom:20px}.pageHead{margin-bottom:22px}.pageHead h2{font-size:28px;margin-bottom:8px}.pageHead p{color:var(--muted)}
+    .steps{position:sticky;top:0;background:rgba(248,250,252,.92);backdrop-filter:blur(10px);z-index:10;padding:12px 0;display:grid;grid-template-columns:repeat(7,1fr);gap:7px;margin-bottom:18px}.step{border:2px solid var(--border);background:var(--surface);color:var(--muted);border-radius:999px;padding:9px 8px;font-size:12px;font-weight:800}.step.active{border-color:var(--blue);background:var(--blueSoft);color:var(--text)}.step.done{border-color:var(--green);background:var(--greenSoft);color:var(--text)}
+    .grid{display:grid;gap:14px}.grid2{grid-template-columns:repeat(2,minmax(0,1fr))}.grid3{grid-template-columns:repeat(3,minmax(0,1fr))}.grid4{grid-template-columns:repeat(4,minmax(0,1fr))}.option,.card,.courseCard{background:var(--surface2);border:1px solid var(--border);border-radius:18px;padding:18px;text-align:left;transition:.18s}.option:hover,.courseCard:hover{border-color:var(--blue);box-shadow:var(--shadow);transform:translateY(-1px)}.option.selected,.courseCard.selected{border-color:var(--blue);background:var(--blueLight);box-shadow:0 0 0 2px rgba(37,99,235,.12)}.optionIcon{font-size:31px;display:block;margin-bottom:10px}.option h3{font-size:17px;margin-bottom:6px}.option p,.courseCard p,.card p{font-size:13px;color:var(--muted)}.courseCard.locked{opacity:.58;cursor:not-allowed}.courseCard h4{font-size:16px;margin-bottom:6px}.badges{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px}.badge{font-size:11px;font-weight:800;padding:4px 8px;border-radius:999px;background:var(--surface3)}.bBlue{background:var(--blueSoft);color:var(--blue)}.bGreen{background:var(--greenSoft);color:var(--green)}.bAmber{background:var(--amberSoft);color:var(--amber)}.bPurple{background:var(--purpleSoft);color:var(--purple)}.bRed{background:var(--redSoft);color:var(--red)}
+    .field{display:block}.field span{display:block;font-size:13px;font-weight:800;margin-bottom:7px}.select{width:100%;padding:12px 14px;border:1px solid var(--border);background:var(--surface);color:var(--text);border-radius:12px}.divider{height:1px;background:var(--border);margin:22px 0}.note{border-radius:16px;padding:15px 16px;border-left:5px solid;font-size:14px;margin:14px 0}.info{background:var(--blueLight);border-color:var(--blue)}.warn{background:var(--amberLight);border-color:var(--amber)}.good{background:var(--greenLight);border-color:var(--green)}.danger{background:var(--redLight);border-color:var(--red)}.nav{display:flex;justify-content:space-between;gap:12px;margin-top:26px}.nav .btn{flex:1}.pillRow{display:flex;gap:8px;flex-wrap:wrap}.pill{font-size:12px;font-weight:800;padding:6px 10px;border:1px solid var(--border);border-radius:999px;background:var(--surface)}
+    .resultGrid{display:grid;grid-template-columns:1.05fr .95fr;gap:20px;align-items:start}.sequence{display:grid;gap:10px}.seqItem{display:grid;grid-template-columns:82px 1fr;gap:14px;background:var(--surface2);border:1px solid var(--border);border-radius:16px;padding:13px;border-left:5px solid var(--blue)}.seqGrade{background:linear-gradient(135deg,var(--blue),var(--purple));color:#fff;border-radius:12px;display:grid;place-items:center;font-size:13px;font-weight:900}.seqCourses{display:grid;gap:8px}.seqCourse{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:11px}.seqCourse h4{font-size:15px}.seqCourse p{font-size:12.5px;color:var(--muted);margin-top:3px}.split{display:grid;grid-template-columns:1fr 1fr;gap:14px}.list{padding-left:18px;margin:10px 0 0}.list li{margin:6px 0;font-size:14px}.pathCard{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:18px}.pathCard h3{margin-bottom:8px}.pathCard p{color:var(--muted);font-size:13px;margin-bottom:12px}.table{width:100%;border-collapse:collapse;font-size:13px;margin-top:10px}.table th,.table td{border:1px solid var(--border);padding:8px;text-align:left}.table th{background:var(--surface2)}.hide{display:none!important}
+    @media(max-width:820px){.hero,.resultGrid,.split,.grid2,.grid3,.grid4{grid-template-columns:1fr}.steps{grid-template-columns:repeat(2,1fr)}.page{padding:20px}.hero{padding:22px}.header{align-items:flex-start;flex-direction:column}.seqItem{grid-template-columns:1fr}.seqGrade{padding:7px}}
+    @media print{.noPrint,.header,.steps,.nav,.hero{display:none!important}body{background:white}.wrap{max-width:100%;padding:0}.page,.card,.pathCard{box-shadow:none;border-color:#999;break-inside:avoid}.resultGrid,.split{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script type="text/babel">
+    const {useMemo,useState} = React;
+
+    const pages = [
+      {id:'welcome', label:'Start'}, {id:'mode', label:'Mode'}, {id:'grade', label:'Grade'},
+      {id:'readiness', label:'Readiness'}, {id:'interests', label:'Interests'}, {id:'courses', label:'Courses'}, {id:'results', label:'Plan'}
+    ];
+
+    const courseBank = {
+      bio:{name:'Biology', level:'Regular', area:'Life Science', grades:[9], desc:'Standard 9th-grade life science: cells, genetics, ecology, evolution, and systems thinking.'},
+      honorsBio:{name:'Honors Biology', level:'Honors', area:'Life Science', grades:[9], desc:'Faster-paced 9th-grade biology for students ready for more reading, analysis, and lab depth.'},
+      physicalScience:{name:'Physical Science', level:'Regular', area:'Physical Science', grades:[10,11,12], desc:'Matter, energy, motion, waves, and practical problem-solving. Strong for students wanting a practical science foundation.'},
+      chem:{name:'Regular Chemistry', level:'Regular', area:'Chemistry', grades:[10,11,12], desc:'Chemistry 1 foundation: measurement, matter, bonding, reactions, labs, and problem solving.'},
+      honorsChem:{name:'Honors Chemistry', level:'Honors', area:'Chemistry', grades:[10,11,12], desc:'Rigorous Chemistry 1 option. Strong choice for health, STEM, science majors, and competitive college paths.'},
+      chem2:{name:'Honors Chemistry 2', level:'Honors', area:'Chemistry', grades:[11,12], desc:'Advanced chemistry after Chemistry 1 or Honors Chemistry 1. Best for strong chemistry students.'},
+      forensics:{name:'Forensic Science', level:'Elective', area:'Applied Science', grades:[11,12], desc:'Applied biology and chemistry through evidence, crime scenes, toxicology, fingerprints, blood, and DNA.'},
+      physics:{name:'Physics', level:'Regular', area:'Physics', grades:[11,12], desc:'Motion, forces, energy, electricity, waves, and applied problem solving. Useful for college and trades.'},
+      apPhysics1:{name:'AP Physics 1', level:'AP', area:'Physics', grades:[11,12], desc:'Algebra-based AP physics for strong math students. Requires Honors Algebra 2 and Advanced Math/Trig or Precalculus as a co-requisite.'},
+      honorsAnatomy:{name:'Honors Anatomy', level:'Honors', area:'Health Science', grades:[11,12], desc:'Human body systems, medical vocabulary, and physiology. Open to all eligible students, prioritized for health and life science pathways.'},
+      organicChem:{name:'Organic Chemistry', level:'Advanced Elective', area:'Chemistry', grades:[12], desc:'12th-grade-only advanced chemistry for medicine, nursing, pharmacy, biology, chemistry, and forensic lab interests.'},
+      rgDrage:{name:'RG Drage Technical School', level:'Career Tech', area:'Technical', grades:[11,12], desc:'Career-technical program pathway beginning junior year. Confirm scheduling and graduation requirements with a counselor.'}
+    };
+
+    const coursesByGrade = grade => Object.entries(courseBank).filter(([id,c]) => c.grades.includes(grade)).map(([id,c]) => ({id,...c}));
+
+    const pathways = {
+      general:{icon:'🧭', title:'General / Non-Science Major Pathway', summary:'A balanced path for students who want a solid science background but are not planning a science-heavy major.', tags:['Balanced','College flexible','Good for undecided'], interests:['nonScience','college','handsOn'], seq:{9:['bio'],10:['chem'],11:['physics'],12:['forensics']}, light:{9:['bio'],10:['physicalScience'],11:['forensics'],12:['physics']}, challenge:{9:['honorsBio'],10:['honorsChem'],11:['physics','honorsAnatomy'],12:['forensics']}},
+      nursing:{icon:'🩺', title:'Nursing / Allied Health Pathway', summary:'Best for nursing, radiology, dental hygiene, EMS, sports medicine, physical therapy, and health science interests.', tags:['Anatomy prioritized','Chemistry important','Health careers'], interests:['health','biology','handsOn'], seq:{9:['bio'],10:['chem'],11:['honorsAnatomy'],12:['physics']}, light:{9:['bio'],10:['chem'],11:['honorsAnatomy'],12:['forensics']}, challenge:{9:['honorsBio'],10:['honorsChem'],11:['honorsAnatomy','chem2'],12:['organicChem','physics']}},
+      premed:{icon:'🔬', title:'Pre-Med / Biology / Science Major Pathway', summary:'Strong lab-science path for biology, chemistry, pharmacy, veterinary, pre-med, and selective science programs.', tags:['Advanced science','Lab heavy','Transcript strength'], interests:['health','chemistry','biology','college'], seq:{9:['honorsBio'],10:['honorsChem'],11:['chem2'],12:['organicChem']}, light:{9:['bio'],10:['chem'],11:['honorsAnatomy'],12:['physics']}, challenge:{9:['honorsBio'],10:['honorsChem'],11:['chem2','honorsAnatomy'],12:['organicChem','apPhysics1']}},
+      engineering:{icon:'⚙️', title:'Engineering / Physics / Math-Heavy STEM Pathway', summary:'Best for engineering, physics, robotics, aviation, architecture, computer science, and technical design.', tags:['Physics prioritized','Math readiness','AP option'], interests:['engineering','mathStrong','college'], seq:{9:['honorsBio'],10:['honorsChem'],11:['physics'],12:['apPhysics1']}, light:{9:['bio'],10:['chem'],11:['physics'],12:['chem2']}, challenge:{9:['honorsBio'],10:['honorsChem'],11:['apPhysics1'],12:['chem2','organicChem']}},
+      rgdrage:{icon:'🛠️', title:'RG Drage / Career Tech Pathway', summary:'For students attending RG Drage or planning trades, apprenticeships, technical school, or hands-on career preparation.', tags:['Career tech','Hands-on','Applied science'], interests:['trades','handsOn'], seq:{9:['bio'],10:['physicalScience'],11:['rgDrage'],12:['rgDrage']}, light:{9:['bio'],10:['physicalScience'],11:['rgDrage'],12:['rgDrage']}, challenge:{9:['bio'],10:['chem'],11:['rgDrage'],12:['rgDrage']}},
+      forensics:{icon:'🛡️', title:'Public Safety / Forensics / Criminal Justice Pathway', summary:'Best for forensic science, criminal justice, law enforcement, fire investigation, EMS, military, and evidence analysis.', tags:['Forensics','Applied evidence','Public safety'], interests:['forensics','health','handsOn'], seq:{9:['bio'],10:['chem'],11:['forensics'],12:['honorsAnatomy']}, light:{9:['bio'],10:['physicalScience'],11:['forensics'],12:['physics']}, challenge:{9:['honorsBio'],10:['honorsChem'],11:['forensics','honorsAnatomy'],12:['organicChem','physics']}},
+      max:{icon:'🚀', title:'Strong Science Student / Maximum Science Pathway', summary:'The heaviest transcript-building option for students who love science and are comfortable with a demanding schedule.', tags:['Most rigorous','Double-up friendly','College selective'], interests:['college','mathStrong','health','chemistry','engineering'], seq:{9:['honorsBio'],10:['honorsChem'],11:['apPhysics1','honorsAnatomy'],12:['organicChem','chem2']}, light:{9:['honorsBio'],10:['honorsChem'],11:['physics'],12:['organicChem']}, challenge:{9:['honorsBio'],10:['honorsChem'],11:['apPhysics1','honorsAnatomy'],12:['organicChem','chem2']}}
+    };
+
+    const goals = [
+      {id:'nursing', icon:'🩺', title:'Nursing / Allied Health', path:'nursing', desc:'Nursing, radiology, dental, EMS, sports medicine, PT/OT.'},
+      {id:'scienceMajor', icon:'🔬', title:'Pre-Med / Science Major', path:'premed', desc:'Biology, chemistry, pharmacy, veterinary, pre-med.'},
+      {id:'engineering', icon:'⚙️', title:'Engineering / STEM', path:'engineering', desc:'Engineering, physics, robotics, aerospace, computer science.'},
+      {id:'nonScience', icon:'🎓', title:'College, Non-Science Major', path:'general', desc:'Business, education, arts, social sciences, communications.'},
+      {id:'rgdrage', icon:'🛠️', title:'RG Drage / Career Tech', path:'rgdrage', desc:'Technical programs, trades, apprenticeships, career prep.'},
+      {id:'forensics', icon:'🛡️', title:'Forensics / Public Safety', path:'forensics', desc:'Forensics, criminal justice, firefighting, EMS, military.'},
+      {id:'undecided', icon:'🧭', title:'Undecided / Keep Options Open', path:'general', desc:'A practical, flexible route while you figure things out.'}
+    ];
+
+    const interestOptions = [
+      {id:'health', icon:'🫀', label:'Health, nursing, medicine'}, {id:'biology', icon:'🌱', label:'Biology, anatomy, life science'},
+      {id:'chemistry', icon:'⚗️', label:'Chemistry, pharmacy, labs'}, {id:'engineering', icon:'⚙️', label:'Engineering, physics, robotics'},
+      {id:'forensics', icon:'🧬', label:'Forensics, criminal justice'}, {id:'trades', icon:'🔧', label:'Trades, automotive, HVAC'},
+      {id:'handsOn', icon:'🧪', label:'Hands-on labs and investigations'}, {id:'college', icon:'📚', label:'Competitive college prep'},
+      {id:'mathStrong', icon:'📈', label:'Math-heavy problem solving'}, {id:'nonScience', icon:'🎓', label:'Non-science college major'}
+    ];
+
+    function hasChemBefore(state, grade, planSoFar){
+      const hist = state.completed.includes('chem') || state.completed.includes('honorsChem');
+      const earlier = planSoFar.some(r => r.grade < grade && (r.courses.includes('chem') || r.courses.includes('honorsChem')));
+      return hist || earlier;
+    }
+    function hasHonorsChemBefore(state, grade, planSoFar){
+      const hist = state.completed.includes('honorsChem');
+      const earlier = planSoFar.some(r => r.grade < grade && r.courses.includes('honorsChem'));
+      return hist || earlier;
+    }
+    function apReady(state){return state.honorsAlg2 === 'yes' && (state.concurrentMath === 'advTrig' || state.concurrentMath === 'precalc');}
+    function courseAllowed(id, grade, state, planSoFar){
+      const notes=[]; let allowed=true;
+      if(!courseBank[id].grades.includes(grade)){allowed=false; notes.push(`${courseBank[id].name} is not offered in grade ${grade}.`)}
+      if(id==='organicChem' && grade!==12){allowed=false; notes.push('Organic Chemistry is 12th grade only.');}
+      if(id==='organicChem' && !hasChemBefore(state, grade, planSoFar)){allowed=false; notes.push('Organic Chemistry should follow Chemistry 1 or Honors Chemistry 1.');}
+      if(id==='honorsAnatomy' && !hasChemBefore(state, grade, planSoFar)){allowed=false; notes.push('Honors Anatomy requires Chemistry 1 or Honors Chemistry 1 first.');}
+      if(id==='apPhysics1' && !apReady(state)){allowed=false; notes.push('AP Physics 1 requires Honors Algebra 2 and Advanced Math/Trig or Precalculus as a co-requisite.');}
+      if(id==='chem2' && !hasChemBefore(state, grade, planSoFar)){allowed=false; notes.push('Honors Chemistry 2 should follow Chemistry 1 or Honors Chemistry 1.');}
+      return {allowed, notes};
+    }
+    function dedupeCourses(ids, used){return ids.filter(id => !(id !== 'rgDrage' && used.has(id)));}
+    function fallbackFor(id, grade, pathId, state, planSoFar, used){
+      const pools = {
+        9:['honorsBio','bio'], 10:['honorsChem','chem','physicalScience'],
+        11:['chem','honorsChem','physics','forensics','honorsAnatomy','chem2','apPhysics1','physicalScience'],
+        12:['physics','forensics','honorsAnatomy','organicChem','chem2','apPhysics1','chem','physicalScience']
+      };
+      const priority = (pools[grade] || []).filter(x => !used.has(x));
+      for(const alt of priority){ if(courseAllowed(alt, grade, state, planSoFar).allowed) return alt; }
+      return priority[0] || id;
+    }
+    function pickPath(state){
+      if(state.goal){return goals.find(g=>g.id===state.goal)?.path || 'general'}
+      if(state.interests.includes('health')) return 'nursing';
+      if(state.interests.includes('engineering') || state.interests.includes('mathStrong')) return 'engineering';
+      if(state.interests.includes('chemistry') || state.interests.includes('biology')) return 'premed';
+      if(state.interests.includes('forensics')) return 'forensics';
+      if(state.interests.includes('trades')) return 'rgdrage';
+      return 'general';
+    }
+    function buildSequenceFromTemplate(state, variant='seq'){
+      const pathId = state.forcePath || pickPath(state); const template = pathways[pathId][variant] || pathways[pathId].seq;
+      const rows=[]; const warnings=[]; const used=new Set(); const start = Number(state.grade || 9);
+      for(let grade=start; grade<=12; grade++){
+        let desired = [...(template[grade] || [])];
+        if(grade===11 && state.rgDrage==='yes') desired=['rgDrage'];
+        if(grade===12 && state.rgDrage==='yes') desired=['rgDrage'];
+        if(!state.doubleUp && desired.length>1) desired=[desired[0]];
+        desired = dedupeCourses(desired, used);
+        const placed=[];
+        for(const id of desired){
+          const check = courseAllowed(id, grade, state, rows);
+          if(check.allowed){placed.push(id); used.add(id);} else {
+            warnings.push(...check.notes.map(n=>`${courseBank[id].name}: ${n}`));
+            const alt = fallbackFor(id, grade, pathId, state, rows, used);
+            if(alt && courseAllowed(alt, grade, state, rows).allowed){placed.push(alt); used.add(alt); warnings.push(`Suggested alternate for grade ${grade}: ${courseBank[alt].name}.`)}
+          }
+        }
+        if(!placed.length){
+          const alt = fallbackFor('forensics', grade, pathId, state, rows, used);
+          placed.push(alt); used.add(alt);
+        }
+        rows.push({grade, courses:placed});
+      }
+      return {pathId, rows, warnings:[...new Set(warnings)]};
+    }
+    function buildFitSequence(state){
+      const start=Number(state.grade || 9); const rows=[]; const warnings=[]; const used=new Set();
+      for(let grade=start; grade<=12; grade++) rows.push({grade,courses:[]});
+      const add=(grade,id,reason)=>{
+        const row=rows.find(r=>r.grade===grade); if(!row) return false;
+        const max = (grade>=11 && state.doubleUp) ? 2 : 1;
+        if(row.courses.length>=max) return false;
+        if(used.has(id) && id!=='rgDrage'){warnings.push(`${courseBank[id].name} was not repeated because students should not take the same science twice.`); return false;}
+        const prior = rows.filter(r=>r.grade<grade);
+        const check=courseAllowed(id,grade,state,prior);
+        if(!check.allowed){warnings.push(...check.notes.map(n=>`${courseBank[id].name}: ${n}`)); return false;}
+        row.courses.push(id); used.add(id); return true;
+      };
+      const wants=[...state.wantedCourses];
+      if(state.rgDrage==='yes') { for(let g=Math.max(11,start); g<=12; g++) add(g,'rgDrage'); }
+      if(wants.includes('organicChem')) add(12,'organicChem');
+      if(wants.includes('apPhysics1')) { if(!add(Math.max(11,start),'apPhysics1')) add(12,'apPhysics1'); }
+      if(wants.includes('honorsAnatomy')) { if(!add(Math.max(11,start),'honorsAnatomy')) add(12,'honorsAnatomy'); }
+      for(const id of wants.filter(x=>!['organicChem','apPhysics1','honorsAnatomy'].includes(x))){
+        for(let g=start; g<=12; g++){ if(add(g,id)) break; }
+      }
+      for(const row of rows){
+        const max = (row.grade>=11 && state.doubleUp) ? 2 : 1;
+        while(row.courses.length < Math.min(max,1)){
+          let fallback = row.grade===9 ? (state.workload==='challenge'?'honorsBio':'bio') : row.grade===10 ? (state.workload==='light'?'physicalScience':state.workload==='challenge'?'honorsChem':'chem') : null;
+          if(!fallback){
+            const path = pickPath(state); fallback = (pathways[path]?.seq[row.grade] || ['forensics'])[0];
+          }
+          if(used.has(fallback)) fallback=fallbackFor(fallback,row.grade,pickPath(state),state,rows.filter(r=>r.grade<row.grade),used);
+          if(!courseAllowed(fallback,row.grade,state,rows.filter(r=>r.grade<row.grade)).allowed) fallback=fallbackFor(fallback,row.grade,pickPath(state),state,rows.filter(r=>r.grade<row.grade),used);
+          row.courses.push(fallback); used.add(fallback);
+        }
+      }
+      return {pathId:pickPath(state), rows, warnings:[...new Set(warnings)]};
+    }
+    function readinessMessages(state, sequence){
+      const msgs=[];
+      const includes = id => sequence.rows.some(r=>r.courses.includes(id));
+      if(includes('apPhysics1')) msgs.push(apReady(state) ? {type:'good', text:'AP Physics 1 readiness: Honors Algebra 2 completed and Advanced Math/Trig or Precalculus is planned/current.'} : {type:'warn', text:'AP Physics 1 readiness issue: it requires Honors Algebra 2 and Advanced Math/Trig or Precalculus as a co-requisite.'});
+      if(includes('honorsAnatomy')) msgs.push(sequence.warnings.some(w=>w.includes('Honors Anatomy')) ? {type:'warn', text:'Honors Anatomy readiness issue: students need Chemistry 1 or Honors Chemistry 1 first.'} : {type:'good', text:'Honors Anatomy readiness: Chemistry 1 or Honors Chemistry 1 is completed or scheduled before Anatomy.'});
+      if(includes('organicChem')) msgs.push(sequence.warnings.some(w=>w.includes('Organic Chemistry')) ? {type:'warn', text:'Organic Chemistry readiness issue: it is 12th grade only and should follow Chemistry.'} : {type:'good', text:'Organic Chemistry placement: scheduled senior year after Chemistry.'});
+      if(!msgs.length) msgs.push({type:'info', text:'No advanced prerequisite issues found for the current plan.'});
+      return msgs;
+    }
+
+    function App(){
+      const [idx,setIdx]=useState(0);
+      const [state,setState]=useState({mode:null,grade:null,goal:null,interests:[],workload:null,rgDrage:null,doubleUp:false,completed:[],honorsAlg2:null,concurrentMath:null,wantedCourses:[],forcePath:null});
+      const page=pages[idx].id;
+      const set=(k,v)=>setState(s=>({...s,[k]:v}));
+      const toggle=(k,id,max=99)=>setState(s=>{const arr=s[k]; const next=arr.includes(id)?arr.filter(x=>x!==id):[...arr,id].slice(0,max); return {...s,[k]:next};});
+      const next=()=>setIdx(i=>Math.min(i+1,pages.length-1)); const back=()=>setIdx(i=>Math.max(i-1,0));
+      const sequence=useMemo(()=> state.mode==='fit' ? buildFitSequence(state) : buildSequenceFromTemplate(state,'seq'),[state]);
+      const challenge=useMemo(()=> buildSequenceFromTemplate({...state,doubleUp:true,workload:'challenge'},'challenge'),[state]);
+      const light=useMemo(()=> buildSequenceFromTemplate({...state,doubleUp:false,workload:'light'},'light'),[state]);
+      const selectedPath=pathways[sequence.pathId];
+      const canContinue = () => {
+        if(page==='mode') return !!state.mode; if(page==='grade') return !!state.grade; if(page==='interests') return state.mode==='browse' || !!state.goal || state.interests.length>0; if(page==='courses') return state.mode!=='fit' || state.wantedCourses.length>0; return true;
+      };
+      const courseButton=(c, selected, onClick, locked=false)=>(
+        <button key={c.id} className={`courseCard ${selected?'selected':''} ${locked?'locked':''}`} onClick={()=>!locked&&onClick()}>
+          <h4>{c.name}</h4><p>{c.desc}</p><div className="badges"><span className="badge bBlue">{c.level}</span><span className="badge bPurple">{c.area}</span>{c.id==='organicChem'&&<span className="badge bGreen">12th only</span>}{c.id==='apPhysics1'&&<span className="badge bAmber">Math prereq</span>}{c.id==='honorsAnatomy'&&<span className="badge bAmber">Chem prereq</span>}</div>
+        </button>
+      );
+      const SequenceView=({data,title})=>(
+        <div className="card"><h3 style={{marginBottom:12}}>{title}</h3><div className="sequence">{data.rows.map(row=><div className="seqItem" key={title+row.grade}><div className="seqGrade">Grade {row.grade}</div><div className="seqCourses">{row.courses.map(id=><div className="seqCourse" key={id}><h4>{courseBank[id]?.name}</h4><p>{courseBank[id]?.desc}</p><div className="badges"><span className="badge bBlue">{courseBank[id]?.level}</span><span className="badge bPurple">{courseBank[id]?.area}</span></div></div>)}</div></div>)}</div></div>
+      );
+      const PathTable=({seq})=><table className="table"><thead><tr><th>Grade</th><th>Course(s)</th></tr></thead><tbody>{[9,10,11,12].map(g=><tr key={g}><td>{g}</td><td>{(seq[g]||[]).map(id=>courseBank[id]?.name).join(' + ')}</td></tr>)}</tbody></table>;
+
+      return <div className="wrap">
+        <div className="header noPrint"><div className="brand"><div className="brandIcon">⚛️</div><div><h1>Science Course Pathway Planner</h1><p>Recommended sequences, custom course fitting, and prerequisite checks</p></div></div><button className="btn ghost" onClick={()=>window.print()}>Print / Save</button></div>
+        {page==='welcome' && <section className="hero"><div><h2>Build a science schedule that actually fits your goals.</h2><p>Students can get a recommendation based on interests, choose courses they already want and see where they fit, or browse common science pathways.</p><div className="actions"><button className="btn primary" onClick={next}>Start</button><button className="btn" onClick={()=>{set('mode','browse');setIdx(6)}}>Browse pathways</button></div></div><div className="heroPanel"><div className="mini"><strong>Two planner modes</strong><span>Recommendation mode or course-fit mode.</span></div><div className="mini"><strong>Real course rules</strong><span>AP Physics math readiness, Honors Anatomy chemistry prerequisite, Organic Chemistry senior-only.</span></div><div className="mini"><strong>Junior/senior double-up</strong><span>Students can build a stronger schedule when they want two sciences.</span></div></div></section>}
+        <div className="steps noPrint">{pages.map((p,i)=><button key={p.id} className={`step ${i===idx?'active':i<idx?'done':''}`} onClick={()=>setIdx(i)}>{i+1}. {p.label}</button>)}</div>
+
+        {page==='mode' && <div className="page"><div className="pageHead"><h2>Choose how you want to plan</h2><p>Students can either ask for a recommendation, fit courses they already like, or browse suggested sequences.</p></div><div className="grid grid3">
+          {[{id:'recommend',icon:'🎯',title:'Show me recommended courses',desc:'Answer a few questions and get a best-fit science pathway.'},{id:'fit',icon:'🧩',title:'I already know courses I want',desc:'Pick interesting courses and see how they fit into 9–12 sequence.'},{id:'browse',icon:'📚',title:'Browse recommended pathways',desc:'See common sequences for nursing, engineering, RG Drage, forensics, and more.'}].map(m=><button key={m.id} className={`option ${state.mode===m.id?'selected':''}`} onClick={()=>set('mode',m.id)}><span className="optionIcon">{m.icon}</span><h3>{m.title}</h3><p>{m.desc}</p></button>)}
+        </div><div className="nav"><button className="btn" onClick={back}>Back</button><button className="btn primary" disabled={!canContinue()} onClick={()=> state.mode==='browse'?setIdx(6):next()}>Continue</button></div></div>}
+
+        {page==='grade' && <div className="page"><div className="pageHead"><h2>What grade are you planning from?</h2><p>No grade is pre-selected. Pick the grade where your plan should begin.</p></div><div className="grid grid4">{[9,10,11,12].map(g=><button key={g} className={`option ${String(g)===state.grade?'selected':''}`} onClick={()=>set('grade',String(g))}><span className="optionIcon">{g===9?'9️⃣':g===10?'🔟':g===11?'1️⃣1️⃣':'1️⃣2️⃣'}</span><h3>{g}th Grade</h3><p>{g===9?'Biology or Honors Biology':g===10?'Physical Science, Regular Chemistry, or Honors Chemistry':g===11?'RG Drage split or expanded high-school science options':'Senior science options, including Organic Chemistry'}</p></button>)}</div><div className="nav"><button className="btn" onClick={back}>Back</button><button className="btn primary" disabled={!canContinue()} onClick={next}>Continue</button></div></div>}
+
+        {page==='readiness' && <div className="page"><div className="pageHead"><h2>Readiness and prerequisite check</h2><p>This lets the planner avoid recommending courses too early.</p></div><div className="grid grid2"><div className="card"><h3>Science already completed or currently taking</h3><p>Select any that apply.</p><div className="divider"></div><div className="grid grid2">{['bio','honorsBio','physicalScience','chem','honorsChem','physics','forensics','honorsAnatomy','chem2','apPhysics1'].map(id=>courseButton({id,...courseBank[id]},state.completed.includes(id),()=>toggle('completed',id)))}</div></div><div className="card"><h3>Math readiness for AP Physics 1</h3><p>AP Physics 1 requires Honors Algebra 2 and Advanced Math/Trig or Precalculus as a co-requisite.</p><div className="divider"></div><label className="field"><span>Have you completed Honors Algebra 2?</span><select className="select" value={state.honorsAlg2||''} onChange={e=>set('honorsAlg2',e.target.value||null)}><option value="">Choose one</option><option value="yes">Yes</option><option value="no">No</option><option value="notSure">Not sure</option></select></label><br/><label className="field"><span>What math will you take with AP Physics 1?</span><select className="select" value={state.concurrentMath||''} onChange={e=>set('concurrentMath',e.target.value||null)}><option value="">Choose one</option><option value="advTrig">Advanced Math / Trig</option><option value="precalc">Precalculus</option><option value="other">Another math course</option><option value="notSure">Not sure</option></select></label><div className="note info"><strong>Honors Anatomy rule:</strong> students need Chemistry 1 or Honors Chemistry 1 before Honors Anatomy.</div></div></div><div className="nav"><button className="btn" onClick={back}>Back</button><button className="btn primary" onClick={next}>Continue</button></div></div>}
+
+        {page==='interests' && <div className="page"><div className="pageHead"><h2>{state.mode==='fit'?'Tell us the bigger goal too':'Future plan and interests'}</h2><p>This is used to prioritize Anatomy, Physics, Chemistry, Forensics, or a more general sequence.</p></div><h3 style={{marginBottom:12}}>Main future direction</h3><div className="grid grid3">{goals.map(g=><button key={g.id} className={`option ${state.goal===g.id?'selected':''}`} onClick={()=>set('goal',g.id)}><span className="optionIcon">{g.icon}</span><h3>{g.title}</h3><p>{g.desc}</p></button>)}</div><div className="divider"></div><h3 style={{marginBottom:12}}>Pick interests</h3><div className="grid grid3">{interestOptions.map(it=><button key={it.id} className={`option ${state.interests.includes(it.id)?'selected':''}`} onClick={()=>toggle('interests',it.id,5)}><span className="optionIcon">{it.icon}</span><p>{it.label}</p></button>)}</div><div className="divider"></div><div className="grid grid3"><label className="field"><span>Preferred workload</span><select className="select" value={state.workload||''} onChange={e=>set('workload',e.target.value||null)}><option value="">Choose one</option><option value="light">Lighter / practical</option><option value="balanced">Balanced</option><option value="challenge">Honors/AP challenge</option></select></label><label className="field"><span>Planning RG Drage?</span><select className="select" value={state.rgDrage||''} onChange={e=>set('rgDrage',e.target.value||null)}><option value="">Choose one</option><option value="no">No / staying high school</option><option value="yes">Yes</option><option value="maybe">Maybe</option></select></label><label className="field"><span>Open to doubling up junior/senior year?</span><select className="select" value={state.doubleUp?'yes':'no'} onChange={e=>set('doubleUp',e.target.value==='yes')}><option value="no">No, one science per year</option><option value="yes">Yes, I may take two sciences</option></select></label></div><div className="nav"><button className="btn" onClick={back}>Back</button><button className="btn primary" disabled={!canContinue()} onClick={state.mode==='recommend'?()=>setIdx(6):next}>Continue</button></div></div>}
+
+        {page==='courses' && <div className="page"><div className="pageHead"><h2>Select courses you are interested in</h2><p>The planner will try to fit these into the correct grade level and sequence.</p></div><div className="note warn"><strong>Built-in rules:</strong> Organic Chemistry is 12th only. Honors Anatomy requires Chemistry 1 or Honors Chemistry 1. AP Physics 1 requires Honors Algebra 2 and Advanced Math/Trig or Precalculus.</div><div className="grid grid3">{Object.entries(courseBank).filter(([id,c])=>id!=='bio'&&id!=='honorsBio'&&id!=='rgDrage').map(([id,c])=>courseButton({id,...c},state.wantedCourses.includes(id),()=>toggle('wantedCourses',id,8)))}</div><div className="nav"><button className="btn" onClick={back}>Back</button><button className="btn primary" disabled={!canContinue()} onClick={next}>Build my plan</button></div></div>}
+
+        {page==='results' && <div className="page"><div className="pageHead"><h2>{state.mode==='browse'?'Recommended science pathways':'Your science course plan'}</h2><p>{state.mode==='browse'?'Use these as general advising sequences.':'This plan includes readiness checks and alternatives.'}</p></div>
+          {state.mode!=='browse' && <div className="resultGrid"><div><div className="card"><h3>{selectedPath.icon} {selectedPath.title}</h3><p>{selectedPath.summary}</p><div className="badges">{selectedPath.tags.map(t=><span key={t} className="badge bGreen">{t}</span>)}</div></div><SequenceView title="Best-fit sequence" data={sequence}/></div><div><div className="card"><h3>Readiness check</h3>{readinessMessages(state,sequence).map((m,i)=><div key={i} className={`note ${m.type}`}>{m.text}</div>)}{sequence.warnings.length>0&&<><h4>Planner notes</h4><ul className="list">{sequence.warnings.map((w,i)=><li key={i}>{w}</li>)}</ul></>}</div><div className="split" style={{marginTop:14}}><SequenceView title="Challenge version" data={challenge}/><SequenceView title="Lighter version" data={light}/></div><div className="note info"><strong>Counselor reminder:</strong> Always confirm graduation requirements, prerequisites, course availability, and your total schedule before final course requests.</div></div></div>}
+          <div className="divider"></div><h3 style={{marginBottom:14}}>General recommended sequences</h3><div className="grid grid2">{Object.entries(pathways).map(([id,p])=><div className="pathCard" key={id}><h3>{p.icon} {p.title}</h3><p>{p.summary}</p><div className="pillRow">{p.tags.map(t=><span className="pill" key={t}>{t}</span>)}</div><PathTable seq={p.seq}/><div className="note info"><strong>Challenge option:</strong> {Object.values(p.challenge).some(arr=>arr.length>1)?'This pathway can include junior/senior double-up sciences.':'Students can strengthen this route by choosing Chemistry or Physics when possible.'}</div></div>)}</div><div className="nav noPrint"><button className="btn" onClick={()=>setIdx(1)}>Revise answers</button><button className="btn primary" onClick={()=>window.print()}>Print / Save</button></div></div>}
+        <footer className="noPrint" style={{textAlign:'center',color:'var(--muted)',fontSize:12,marginTop:36,borderTop:'1px solid var(--border)',paddingTop:18}}>Science Course Pathway Planner • customize final wording to match official school handbook language.</footer>
+      </div>;
+    }
+    ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+  </script>
+</body>
+</html>
