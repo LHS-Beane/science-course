@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Science Course Pathway Planner</title>
+  <style>
+    :root {
+      --bg: #f9fafb; --surface: #ffffff; --surface2:#f3f4f6; --surface3:#e5e7eb;
+      --text:#0f172a; --muted:#6b7280; --border:#d1d5db;
+      --blue:#2563eb; --blueSoft:#dbeafe; --blueLight:#eff6ff;
+      --green:#10b981; --greenSoft:#d1fae5; --greenLight:#f0fdf4;
+      --amber:#d97706; --amberSoft:#fef3c7; --amberLight:#fffbeb;
+      --purple:#8b5cf6; --purpleSoft:#ede9fe; --purpleLight:#faf5ff;
+      --red:#ef4444; --redSoft:#fee2e2;
+      --shadow: 0 4px 6px rgba(0, 0, 0, 0.07), 0 10px 13px rgba(0, 0, 0, 0.05);
+      --shadowLarge: 0 20px 25px rgba(0, 0, 0, 0.1), 0 10px 10px rgba(0, 0, 0, 0.04);
+      --radius:12px; --radiusMd:14px; --radiusLg:16px;
+      --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', sans-serif;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg:#0f172a; --surface:#1e293b; --surface2:#334155; --surface3:#475569;
+        --text:#f1f5f9; --muted:#cbd5e1; --border:#475569;
+        --blueLight:#0c2d5c; --blueSoft:#1e3a8a; --greenLight:#064e3b; --greenSoft:#065f46;
+        --amberLight:#78350f; --amberSoft:#92400e; --purpleLight:#4c1d95; --purpleSoft:#6b21a8;
+        --shadow: 0 4px 6px rgba(0, 0, 0, 0.3), 0 10px 13px rgba(0, 0, 0, 0.2);
+        --shadowLarge: 0 20px 25px rgba(0, 0, 0, 0.4);
+      }
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { 
+      margin: 0; font-family: var(--font); color: var(--text); background: var(--bg);
+      line-height: 1.6;
+    }
+    h1, h2, h3, h4, h5 { margin: 0; font-weight: 700; letter-spacing: -0.02em; }
+    p { margin: 0; }
+    button, input, select { font: inherit; }
+    button { cursor: pointer; border: none; }
+    a { color: var(--blue); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .app { min-height: 100vh; background: var(--bg); }
+    .wrap { max-width: 1280px; margin: 0 auto; padding: 32px 20px 80px; }
+    
+    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; gap: 20px; }
+    .brand { display: flex; gap: 12px; align-items: center; }
+    .brand-icon { width: 48px; height: 48px; border-radius: 12px; background: linear-gradient(135deg, var(--blue), var(--purple)); display: grid; place-items: center; color: white; font-size: 24px; box-shadow: var(--shadow); }
+    .brand-text h1 { font-size: 24px; margin-bottom: 2px; }
+    .brand-text p { font-size: 13px; color: var(--muted); }
+    .header-actions { display: flex; gap: 10px; }
+
+    .hero { 
+      background: linear-gradient(135deg, var(--blueLight) 0%, var(--purpleLight) 100%);
+      border-radius: var(--radiusLg); padding: 48px; margin-bottom: 32px;
+      display: grid; grid-template-columns: 1.3fr .7fr; gap: 32px; align-items: center;
+    }
+    .hero-content h2 { font-size: clamp(32px, 4vw, 48px); color: var(--text); margin-bottom: 16px; line-height: 1.1; }
+    .hero-content p { font-size: 16px; color: var(--muted); margin-bottom: 24px; line-height: 1.6; }
+    .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+    .hero-features { display: grid; gap: 12px; }
+    .feature-item { display: flex; gap: 12px; align-items: flex-start; }
+    .feature-icon { font-size: 24px; flex-shrink: 0; }
+    .feature-text { font-size: 14px; }
+    .feature-text strong { display: block; color: var(--text); }
+
+    .btn {
+      border-radius: var(--radius); padding: 12px 20px; font-weight: 600; font-size: 14px;
+      transition: all 0.2s ease; display: inline-flex; align-items: center; gap: 8px;
+      border: 1px solid var(--border);
+    }
+    .btn { background: var(--surface); color: var(--text); }
+    .btn:hover { background: var(--surface2); border-color: var(--blue); transform: translateY(-1px); box-shadow: var(--shadow); }
+    .btn.primary { background: linear-gradient(135deg, var(--blue), var(--purple)); color: white; border: none; }
+    .btn.primary:hover { transform: translateY(-2px); box-shadow: var(--shadowLarge); }
+    .btn.secondary { background: var(--surface2); }
+    .btn.ghost { background: transparent; border: 1px solid transparent; }
+    .btn.ghost:hover { background: var(--surface2); border-color: var(--muted); }
+    .btn.sm { padding: 8px 14px; font-size: 13px; }
+    .btn.block { width: 100%; justify-content: center; }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .progress-tracker { 
+      display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px;
+      margin-bottom: 24px; position: sticky; top: 0; z-index: 10;
+      background: var(--bg); padding: 16px 0; 
+    }
+    .progress-step {
+      padding: 12px; border-radius: 999px; font-size: 12px; font-weight: 700;
+      border: 2px solid var(--border); background: var(--surface); color: var(--muted);
+      text-align: center; cursor: pointer; transition: all 0.2s;
+    }
+    .progress-step.active { background: var(--blueSoft); border-color: var(--blue); color: var(--text); }
+    .progress-step.done { background: var(--greenSoft); border-color: var(--green); color: var(--text); }
+    .progress-step:hover { border-color: var(--blue); }
+
+    .page {
+      background: var(--surface); border-radius: var(--radiusLg); padding: 32px;
+      box-shadow: var(--shadow); margin-bottom: 24px;
+    }
+    .page-header { margin-bottom: 28px; }
+    .page-header h2 { font-size: 28px; margin-bottom: 12px; }
+    .page-header > p { color: var(--muted); font-size: 15px; }
+
+    .section-divider { height: 1px; background: var(--border); margin: 24px 0; }
+
+    .grid { display: grid; gap: 16px; }
+    .grid2 { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+    .grid3 { grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); }
+    .grid4 { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+
+    .card {
+      background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radiusMd);
+      padding: 20px; transition: all 0.2s;
+    }
+    .card:hover { border-color: var(--blue); box-shadow: var(--shadow); }
+    .card.selected { border-color: var(--blue); background: var(--blueLight); }
+    .card h3 { font-size: 18px; margin-bottom: 8px; }
+    .card p { color: var(--muted); font-size: 14px; }
+    .card-icon { font-size: 32px; margin-bottom: 12px; }
+
+    .option {
+      background: var(--surface); border: 1px solid var(--border); border-radius: var(--radiusMd);
+      padding: 20px; cursor: pointer; transition: all 0.2s; text-align: left;
+    }
+    .option:hover { border-color: var(--blue); box-shadow: var(--shadow); }
+    .option.selected { border-color: var(--blue); background: var(--blueLight); }
+    .option-icon { font-size: 32px; margin-bottom: 12px; display: block; }
+    .option h3 { font-size: 16px; margin-bottom: 6px; }
+    .option p { color: var(--muted); font-size: 13px; }
+
+    .multi-select {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px;
+      margin-top: 12px;
+    }
+    .tag {
+      padding: 8px 12px; border-radius: 999px; font-size: 13px; font-weight: 600;
+      border: 1px solid var(--border); background: var(--surface2); cursor: pointer;
+      transition: all 0.2s; display: inline-block;
+    }
+    .tag.selected { background: var(--purpleSoft); border-color: var(--purple); color: var(--text); }
+
+    .course-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; }
+    .course-card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: var(--radiusMd);
+      padding: 18px; cursor: pointer; transition: all 0.2s; position: relative;
+    }
+    .course-card:hover { border-color: var(--blue); box-shadow: var(--shadow); }
+    .course-card.selected { border-color: var(--blue); background: var(--blueLight); }
+    .course-card.locked { opacity: 0.5; cursor: not-allowed; }
+    .course-card h4 { font-size: 16px; margin-bottom: 8px; }
+    .course-card p { color: var(--muted); font-size: 13px; line-height: 1.5; margin-bottom: 12px; }
+    .course-meta { display: flex; flex-wrap: wrap; gap: 6px; }
+    .course-badge { font-size: 11px; padding: 4px 8px; border-radius: 999px; font-weight: 600; }
+    .badge-level { background: var(--blueSoft); color: var(--blue); }
+    .badge-area { background: var(--purpleSoft); color: var(--purple); }
+    .badge-rigor { background: var(--amberSoft); color: var(--amber); }
+    .badge-special { background: var(--greenSoft); color: var(--green); }
+
+    .pathway-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: start; }
+    .pathway-summary {
+      background: var(--surface); border-radius: var(--radiusMd); padding: 24px;
+      border: 1px solid var(--border);
+    }
+    .pathway-header { display: flex; gap: 16px; align-items: start; margin-bottom: 20px; }
+    .pathway-icon { font-size: 40px; flex-shrink: 0; }
+    .pathway-title { font-size: 24px; margin-bottom: 8px; }
+    .pathway-desc { color: var(--muted); font-size: 14px; }
+
+    .course-sequence { display: grid; gap: 12px; }
+    .sequence-item {
+      display: grid; grid-template-columns: 80px 1fr; gap: 16px;
+      padding: 14px; background: var(--surface2); border-radius: var(--radius);
+      border-left: 4px solid var(--blue);
+    }
+    .sequence-grade {
+      background: linear-gradient(135deg, var(--blue), var(--purple));
+      color: white; border-radius: 8px; display: grid; place-items: center;
+      font-weight: 700; font-size: 14px;
+    }
+    .sequence-course h4 { font-size: 15px; margin-bottom: 4px; }
+    .sequence-course p { color: var(--muted); font-size: 13px; }
+    .sequence-course .meta { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
+    .sequence-course .meta span { font-size: 11px; padding: 2px 6px; background: var(--surface3); border-radius: 4px; }
+
+    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; }
+    .stat-box {
+      background: var(--surface2); border-radius: var(--radius); padding: 16px;
+      border: 1px solid var(--border); text-align: center;
+    }
+    .stat-label { font-size: 12px; color: var(--muted); text-transform: uppercase; font-weight: 600; margin-bottom: 8px; }
+    .stat-value { font-size: 28px; font-weight: 700; color: var(--blue); }
+
+    .resource-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
+    .resource-card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: var(--radiusMd);
+      padding: 20px;
+    }
+    .resource-card h4 { margin-bottom: 8px; }
+    .resource-card p { color: var(--muted); font-size: 13px; margin-bottom: 12px; }
+    .resource-list { list-style: none; padding: 0; margin: 0; }
+    .resource-list li { padding: 6px 0; font-size: 13px; }
+    .resource-list li:before { content: "→ "; color: var(--blue); font-weight: 600; }
+
+    .comparison-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+    .comparison-card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: var(--radiusMd);
+      padding: 24px;
+    }
+    .comparison-card h3 { font-size: 20px; margin-bottom: 16px; display: flex; gap: 8px; align-items: center; }
+    .comparison-card .feature { display: flex; gap: 12px; margin-bottom: 12px; }
+    .comparison-card .feature:before { content: "✓"; color: var(--green); font-weight: 700; flex-shrink: 0; }
+
+    .warning, .info, .tip {
+      border-radius: var(--radius); padding: 16px; font-size: 14px; margin: 16px 0;
+      border-left: 4px solid;
+    }
+    .warning { background: var(--amberLight); border-color: var(--amber); color: var(--text); }
+    .info { background: var(--blueLight); border-color: var(--blue); color: var(--text); }
+    .tip { background: var(--greenLight); border-color: var(--green); color: var(--text); }
+
+    .nav-buttons {
+      display: flex; justify-content: space-between; gap: 12px; margin-top: 32px;
+    }
+    .nav-buttons .btn { flex: 1; }
+
+    .checklist { display: grid; gap: 10px; margin: 16px 0; }
+    .checklist-item { display: flex; gap: 10px; align-items: start; font-size: 14px; }
+    .checklist-item:before { content: "✓"; color: var(--green); font-weight: 700; flex-shrink: 0; }
+
+    .print-only { display: none; }
+    .no-print { }
+    @media print {
+      body { background: white; }
+      .no-print, .header, .hero, .progress-tracker, .nav-buttons { display: none !important; }
+      .wrap { padding: 0; max-width: 100%; }
+      .page { box-shadow: none; border: 1px solid #ccc; page-break-inside: avoid; }
+      .print-only { display: block; }
+      .course-sequence { page-break-inside: avoid; }
+    }
+
+    @media (max-width: 768px) {
+      .wrap { padding: 20px 14px 60px; }
+      .header { flex-direction: column; align-items: flex-start; }
+      .hero { grid-template-columns: 1fr; gap: 24px; padding: 32px 20px; }
+      .pathway-grid { grid-template-columns: 1fr; }
+      .progress-tracker { grid-template-columns: repeat(3, 1fr); }
+      .comparison-grid { grid-template-columns: 1fr; }
+      .page { padding: 20px; }
+      .page-header h2 { font-size: 22px; }
+    }
+
+    .hide { display: none !important; }
+    .fade-in { animation: fadeIn 0.3s ease; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script type="text/babel">
+    const { useMemo, useState } = React;
+
+    const steps = [
+      { id: "welcome", label: "Start" },
+      { id: "grade", label: "Grade" },
+      { id: "goal", label: "Future" },
+      { id: "interests", label: "Interests" },
+      { id: "courses", label: "Courses" },
+      { id: "results", label: "Plan" }
+    ];
+
+    const gradeCourses = {
+      9: [
+        { id: "bio", name: "Biology", level: "Regular", area: "Life Science", rigor: "standard", desc: "Standard 9th-grade life science: cells, genetics, ecology, evolution, systems thinking." },
+        { id: "honorsBio", name: "Honors Biology", level: "Honors", area: "Life Science", rigor: "advanced", desc: "Faster-paced, deeper biology with more independent reading and complex labs." }
+      ],
+      10: [
+        { id: "physicalScience", name: "Physical Science", level: "Regular", area: "Physical Science", rigor: "standard", desc: "Matter, forces, energy, waves, and practical problem-solving." },
+        { id: "chem", name: "Regular Chemistry", level: "Regular", area: "Chemistry", rigor: "standard", desc: "College-aware foundation: reactions, bonding, measurements, hands-on labs." },
+        { id: "honorsChem", name: "Honors Chemistry", level: "Honors", area: "Chemistry", rigor: "advanced", desc: "Best choice for STEM, health, nursing, engineering, or selective college pathways." }
+      ],
+      11: [
+        { id: "rgDrage", name: "RG Drage Technical School", level: "Career Tech", area: "Technical", rigor: "applied", desc: "Technical program pathway—different course sequence. Confirm with counselor." },
+        { id: "physicalScience", name: "Physical Science", level: "Regular", area: "Physical Science", rigor: "standard", desc: "Practical science foundation for less math-heavy route." },
+        { id: "chem", name: "Regular Chemistry", level: "Regular", area: "Chemistry", rigor: "standard", desc: "College, nursing, health, labs, trades—widely applicable." },
+        { id: "honorsChem", name: "Honors Chemistry", level: "Honors", area: "Chemistry", rigor: "advanced", desc: "Rigorous option for students ready for challenge." },
+        { id: "chem2", name: "Honors Chemistry 2", level: "Honors", area: "Chemistry", rigor: "advanced", desc: "Advanced chemistry for students who completed Chemistry." },
+        { id: "forensics", name: "Forensic Science", level: "Elective", area: "Applied Science", rigor: "applied", desc: "Applied biology, chemistry, evidence analysis, investigation." },
+        { id: "physics", name: "Physics", level: "Regular", area: "Physics", rigor: "standard", desc: "Motion, forces, energy, electricity, waves—useful for trades and college." },
+        { id: "apPhysics1", name: "AP Physics 1", level: "AP", area: "Physics", rigor: "advanced", desc: "High-rigor algebra-based physics for strong math students." },
+        { id: "honorsAnatomy", name: "Honors Anatomy", level: "Honors", area: "Health Science", rigor: "applied", desc: "Human body systems and medical vocabulary for nursing and health." }
+      ],
+      12: [
+        { id: "physicalScience", name: "Physical Science", level: "Regular", area: "Physical Science", rigor: "standard", desc: "Practical option for less math-heavy senior science." },
+        { id: "chem", name: "Regular Chemistry", level: "Regular", area: "Chemistry", rigor: "standard", desc: "Widely useful for college, health, trades, and general ed." },
+        { id: "honorsChem", name: "Honors Chemistry", level: "Honors", area: "Chemistry", rigor: "advanced", desc: "Rigorous choice for college-bound seniors." },
+        { id: "chem2", name: "Honors Chemistry 2", level: "Honors", area: "Chemistry", rigor: "advanced", desc: "Advanced chemistry for students who loved Chemistry." },
+        { id: "forensics", name: "Forensic Science", level: "Elective", area: "Applied Science", rigor: "applied", desc: "Applied science for criminal justice and health interests." },
+        { id: "physics", name: "Physics", level: "Regular", area: "Physics", rigor: "standard", desc: "Strong for college readiness and technical careers." },
+        { id: "apPhysics1", name: "AP Physics 1", level: "AP", area: "Physics", rigor: "advanced", desc: "High-rigor option for STEM-focused students." },
+        { id: "honorsAnatomy", name: "Honors Anatomy", level: "Honors", area: "Health Science", rigor: "applied", desc: "Medical vocabulary and body systems for health careers." },
+        { id: "organicChem", name: "Organic Chemistry", level: "Advanced Elective", area: "Chemistry", rigor: "advanced", desc: "12th grade only. For medicine, nursing, pharmacy, chemistry, forensics." }
+      ]
+    };
+
+    const goals = [
+      { id: "nursing", icon: "🩺", title: "Nursing / Allied Health", desc: "Nursing, dental, radiography, EMS, sports medicine, health science." },
+      { id: "stem", icon: "⚙️", title: "STEM / Engineering", desc: "Engineering, computer science, physics, robotics, aerospace." },
+      { id: "scienceMajor", icon: "🔬", title: "Science Major", desc: "Biology, chemistry, environmental science, pre-med, pharmacy." },
+      { id: "nonScienceCollege", icon: "🎓", title: "Non-Science College", desc: "Business, education, communications, arts, social sciences." },
+      { id: "careerTech", icon: "🛠️", title: "Career Tech / Trades", desc: "RG Drage, trades, apprenticeships, automotive, HVAC, welding." },
+      { id: "publicSafety", icon: "🛡️", title: "Public Safety / Forensics", desc: "Criminal justice, law enforcement, firefighting, EMS, military." },
+      { id: "workforce", icon: "💼", title: "Workforce / Undecided", desc: "Practical science literacy while keeping options open." }
+    ];
+
+    const interests = [
+      { id: "health", icon: "🫀", label: "Health, nursing, medicine" },
+      { id: "engineering", icon: "⚙️", label: "Engineering, physics, robotics" },
+      { id: "chemistry", icon: "⚗️", label: "Chemistry, pharmacy, labs" },
+      { id: "forensics", icon: "🧬", label: "Forensics, criminal justice" },
+      { id: "trades", icon: "🔧", label: "Trades, automotive, HVAC" },
+      { id: "environment", icon: "🌎", label: "Environment, wildlife" },
+      { id: "college", icon: "📚", label: "Competitive college prep" },
+      { id: "nonScience", icon: "🧭", label: "Non-science major" },
+      { id: "handsOn", icon: "🧪", label: "Hands-on labs" },
+      { id: "mathStrong", icon: "📈", label: "Math-heavy problem-solving" }
+    ];
+
+    const pathways = {
+      nursing: {
+        icon: "🩺",
+        title: "Nursing / Allied Health Pathway",
+        color: "blue",
+        summary: "Nursing, dental, respiratory, EMS, radiology, sports medicine—patients and healthcare.",
+        rigor: "high",
+        tags: ["Anatomy priority", "Chemistry recommended", "College-ready"],
+        colleges: ["CWRU", "University of Pittsburgh", "Ohio State Nursing"],
+        careers: ["Registered Nurse", "Dental Hygienist", "EMS Paramedic", "Respiratory Therapist"],
+        advice: [
+          "Honors Anatomy is one of the most directly useful high-school science courses for this route.",
+          "Chemistry is strongly preferred by most nursing programs—try not to skip it.",
+          "Physics or Forensics can strengthen the transcript if time allows."
+        ]
+      },
+      stem: {
+        icon: "⚙️",
+        title: "STEM / Engineering Pathway",
+        color: "amber",
+        summary: "Engineering, robotics, computer science, physics—design and innovation.",
+        rigor: "high",
+        tags: ["Physics priority", "Strong math needed", "AP valuable"],
+        colleges: ["Carnegie Mellon", "Case Western", "Ohio State Engineering"],
+        careers: ["Software Engineer", "Mechanical Engineer", "Roboticist", "Data Scientist"],
+        advice: [
+          "Physics or AP Physics 1 should be your anchor course.",
+          "Strong math skills are essential—make sure algebra and geometry are solid.",
+          "Doubling up on math and science senior year is common for this path."
+        ]
+      },
+      scienceMajor: {
+        icon: "🔬",
+        title: "Science Major / Lab Science Pathway",
+        color: "green",
+        summary: "Biology, chemistry, environmental science, pre-med, pharmacy—research and lab work.",
+        rigor: "high",
+        tags: ["Chemistry priority", "Advanced options", "Lab heavy"],
+        colleges: ["Case Western", "OSU College of Arts & Sciences", "Ohio University"],
+        careers: ["Pharmacist", "Research Scientist", "Geologist", "Biochemist"],
+        advice: [
+          "Biology, Chemistry, and Physics together create the strongest foundation.",
+          "Honors Chemistry 2 and Organic Chemistry show serious science commitment.",
+          "Second science senior year is excellent for selective science programs."
+        ]
+      },
+      nonScienceCollege: {
+        icon: "🎓",
+        title: "College-Bound Non-Science Pathway",
+        color: "purple",
+        summary: "College-bound but not planning a science major—keep options open.",
+        rigor: "medium",
+        tags: ["Balanced", "Transcript friendly", "College-ready"],
+        colleges: ["University of Michigan", "Indiana University", "Oberlin College"],
+        careers: ["Accountant", "Teacher", "Journalist", "Business Manager"],
+        advice: [
+          "Regular Chemistry or Physics is often better than avoiding rigor completely.",
+          "Forensics and Anatomy feel relevant and less demanding than honors courses.",
+          "Aim for credibility without overloading yourself unnecessarily."
+        ]
+      },
+      careerTech: {
+        icon: "🛠️",
+        title: "Career Tech / Trades Pathway",
+        color: "red",
+        summary: "RG Drage, apprenticeships, trades—hands-on technical careers.",
+        rigor: "applied",
+        tags: ["RG Drage option", "Hands-on", "Practical science"],
+        colleges: ["RG Drage Technical School", "Union apprenticeships"],
+        careers: ["HVAC Technician", "Electrician", "Welder", "Automotive Technician"],
+        advice: [
+          "Physics and Physical Science connect to tools, electricity, motion, and machines.",
+          "Chemistry helps with materials, safety, and environmental rules.",
+          "Confirm scheduling and requirements with your counselor early."
+        ]
+      },
+      publicSafety: {
+        icon: "🛡️",
+        title: "Public Safety / Forensics Pathway",
+        color: "amber",
+        summary: "Criminal justice, forensics, law enforcement, firefighting, EMS, military.",
+        rigor: "medium",
+        tags: ["Applied science", "Evidence reasoning", "Career-connected"],
+        colleges: ["Ohio University Criminal Justice", "Kent State Forensics"],
+        careers: ["Forensic Scientist", "Police Detective", "Fire Investigator", "EMS Paramedic"],
+        advice: [
+          "Forensic Science is the perfect applied option after Biology/Chemistry.",
+          "Anatomy helps for EMS and crime scene investigation.",
+          "Physics supports crash analysis, ballistics, and evidence reconstruction."
+        ]
+      },
+      workforce: {
+        icon: "🧭",
+        title: "Practical / Undecided Pathway",
+        color: "gray",
+        summary: "Figuring it out—keep doors open with practical science literacy.",
+        rigor: "flexible",
+        tags: ["Flexible", "Confidence-building", "Keeps options open"],
+        colleges: ["Community colleges", "Trade schools", "Local universities"],
+        careers: ["Many options—stay flexible"],
+        advice: [
+          "Pick courses that connect to something you might do, not just what sounds easy.",
+          "A balanced mix of life, physical, and applied science works well.",
+          "College is still possible—don't dismiss Chemistry too early."
+        ]
+      }
+    };
+
+    function primaryPath(state) {
+      if (state.goal !== "workforce") return state.goal;
+      if (state.interests.includes("health")) return "nursing";
+      if (state.interests.includes("engineering") || state.interests.includes("mathStrong")) return "stem";
+      if (state.interests.includes("chemistry") || state.interests.includes("environment")) return "scienceMajor";
+      if (state.interests.includes("forensics")) return "publicSafety";
+      if (state.interests.includes("trades") || state.rgDrage === "yes") return "careerTech";
+      if (state.interests.includes("nonScience")) return "nonScienceCollege";
+      return "workforce";
+    }
+
+    function recommendedForGrade(grade, path, state) {
+      if (grade === 9) {
+        if (["stem", "scienceMajor", "nursing"].includes(path) || state.rigor === "advanced") return ["honorsBio"];
+        return ["bio"];
+      }
+      if (grade === 10) {
+        if (["stem", "scienceMajor", "nursing"].includes(path) || state.rigor === "advanced") return ["honorsChem"];
+        if (["nonScienceCollege", "publicSafety"].includes(path)) return ["chem"];
+        return ["physicalScience"];
+      }
+      if (grade === 11) {
+        if (state.rgDrage === "yes") return ["rgDrage"];
+        if (path === "nursing") return ["honorsAnatomy"];
+        if (path === "stem") return state.rigor === "advanced" ? ["apPhysics1"] : ["physics"];
+        if (path === "scienceMajor") return ["honorsChem2"];
+        if (path === "nonScienceCollege") return ["physics"];
+        if (path === "careerTech") return ["physics"];
+        if (path === "publicSafety") return ["forensics"];
+        return ["forensics"];
+      }
+      if (grade === 12) {
+        if (path === "nursing") return ["honorsAnatomy"];
+        if (path === "stem") return ["apPhysics1"];
+        if (path === "scienceMajor") return ["organicChem"];
+        if (path === "nonScienceCollege") return ["physics"];
+        if (path === "careerTech") return ["physics"];
+        if (path === "publicSafety") return ["forensics"];
+        return ["forensics"];
+      }
+      return [];
+    }
+
+    function buildPlan(state) {
+      const pathId = primaryPath(state);
+      const path = pathways[pathId];
+      const start = Number(state.grade);
+      const rows = [];
+      for (let g = start; g <= 12; g++) {
+        const recIds = recommendedForGrade(g, pathId, state);
+        const pickedIds = state.selectedCourses[g] || [];
+        const ids = pickedIds.length ? pickedIds : recIds;
+        ids.forEach((id, idx) => {
+          const c = gradeCourses[g].find(cc => cc.id === id) || Object.values(gradeCourses).flat().find(cc => cc.id === id);
+          if (c) rows.push({ grade: g, ...c, source: pickedIds.length ? "You selected" : "Recommended" });
+        });
+      }
+      return { pathId, path, rows };
+    }
+
+    function App() {
+      const [step, setStep] = useState(0);
+      const [state, setState] = useState({
+        grade: "9",
+        goal: "workforce",
+        interests: [],
+        rigor: "balanced",
+        rgDrage: "no",
+        selectedCourses: {}
+      });
+
+      const plan = useMemo(() => buildPlan(state), [state]);
+      const current = steps[step].id;
+      const set = (k, v) => setState(s => ({ ...s, [k]: v }));
+      const toggleInterest = id => setState(s => ({
+        ...s,
+        interests: s.interests.includes(id)
+          ? s.interests.filter(x => x !== id)
+          : [...s.interests, id].slice(0, 5)
+      }));
+
+      const toggleCourse = (grade, id) => setState(s => {
+        let next = [id];
+        if (id === "rgDrage") next = ["rgDrage"];
+        return { ...s, selectedCourses: { ...s.selectedCourses, [grade]: next } };
+      });
+
+      const resetSelections = () => setState(s => ({ ...s, selectedCourses: {} }));
+      const next = () => setStep(s => Math.min(s + 1, steps.length - 1));
+      const back = () => setStep(s => Math.max(s - 1, 0));
+
+      const selectedGoal = goals.find(g => g.id === state.goal);
+      const visibleCourseGrades = Number(state.grade) <= 10
+        ? [Number(state.grade), 11, 12].filter(g => g >= Number(state.grade))
+        : [Number(state.grade)];
+
+      const renderBadge = (type, value) => {
+        const badges = {
+          blue: "badge-level",
+          purple: "badge-area",
+          amber: "badge-rigor",
+          green: "badge-special"
+        };
+        return <span className={`course-badge ${badges[type] || ""}`}>{value}</span>;
+      };
+
+      return <div className="app">
+        <div className="wrap">
+          <div className="header no-print">
+            <div className="brand">
+              <div className="brand-icon">⚛️</div>
+              <div className="brand-text">
+                <h1>Science Pathway Planner</h1>
+                <p>Find your best course sequence</p>
+              </div>
+            </div>
+            <div className="header-actions">
+              <button className="btn ghost" onClick={() => window.print()}>Print plan</button>
+            </div>
+          </div>
+
+          {current === "welcome" && (
+            <section className="hero fade-in">
+              <div className="hero-content">
+                <h2>Pick science classes with purpose</h2>
+                <p>This planner guides you step-by-step: your grade, your future, your interests, and custom course pathways tailored to your goals.</p>
+                <div className="hero-actions">
+                  <button className="btn primary" onClick={next}>Start planning</button>
+                  <button className="btn" onClick={() => setStep(5)}>See an example</button>
+                </div>
+              </div>
+              <div className="hero-features">
+                <div className="feature-item">
+                  <div className="feature-icon">🎯</div>
+                  <div className="feature-text">
+                    <strong>7 distinct pathways</strong>
+                    <span>Nursing, STEM, science majors, college prep, trades, forensics, and undecided</span>
+                  </div>
+                </div>
+                <div className="feature-item">
+                  <div className="feature-icon">📚</div>
+                  <div className="feature-text">
+                    <strong>Real course options</strong>
+                    <span>All courses from 9–12 grade with descriptions and rigor levels</span>
+                  </div>
+                </div>
+                <div className="feature-item">
+                  <div className="feature-icon">🛠️</div>
+                  <div className="feature-text">
+                    <strong>RG Drage included</strong>
+                    <span>Pathway splits at 11th grade for technical students</span>
+                  </div>
+                </div>
+                <div className="feature-item">
+                  <div className="feature-icon">📋</div>
+                  <div className="feature-text">
+                    <strong>Print-ready plan</strong>
+                    <span>Save, print, or share your recommended pathway</span>
+                  </div>
+                </div>
+              </div>
+            </section>
+          )}
+
+          <div className="progress-tracker no-print">
+            {steps.map((s, i) => (
+              <button
+                key={s.id}
+                className={`progress-step ${i === step ? "active" : i < step ? "done" : ""}`}
+                onClick={() => setStep(i)}
+              >
+                {i + 1}. {s.label}
+              </button>
+            ))}
+          </div>
+
+          {current === "grade" && (
+            <div className="page fade-in">
+              <div className="page-header">
+                <h2>What grade are you planning from?</h2>
+                <p>This determines which courses appear in your options. You're not locked into anything yet.</p>
+              </div>
+              <div className="grid grid4">
+                {[9, 10, 11, 12].map(g => (
+                  <button
+                    key={g}
+                    className={`option ${state.grade === String(g) ? "selected" : ""}`}
+                    onClick={() => { set("grade", String(g)); resetSelections(); }}
+                  >
+                    <span className="option-icon">{g === 9 ? "9️⃣" : g === 10 ? "🔟" : g === 11 ? "1️⃣1️⃣" : "1️⃣2️⃣"}</span>
+                    <h3>{g}th Grade</h3>
+                    <p>{g === 9 ? "Biology or Honors Biology" : g === 10 ? "Regular or Honors Chemistry" : g === 11 ? "Expanded options or RG Drage" : "Senior science choices"}</p>
+                  </button>
+                ))}
+              </div>
+              <div className="nav-buttons no-print">
+                <button className="btn" onClick={back}>Back</button>
+                <button className="btn primary" onClick={next}>Continue</button>
+              </div>
+            </div>
+          )}
+
+          {current === "goal" && (
+            <div className="page fade-in">
+              <div className="page-header">
+                <h2>What future path sounds right?</h2>
+                <p>This helps avoid one-size-fits-all advice. You can always change your mind.</p>
+              </div>
+              <div className="grid grid3">
+                {goals.map(g => (
+                  <button
+                    key={g.id}
+                    className={`option ${state.goal === g.id ? "selected" : ""}`}
+                    onClick={() => set("goal", g.id)}
+                  >
+                    <span className="option-icon">{g.icon}</span>
+                    <h3>{g.title}</h3>
+                    <p>{g.desc}</p>
+                  </button>
+                ))}
+              </div>
+              <div className="section-divider"></div>
+              <div className="grid grid3">
+                <label>
+                  <span style={{ fontSize: "13px", fontWeight: "600", marginBottom: "8px", display: "block" }}>Course intensity</span>
+                  <select value={state.rigor} onChange={e => set("rigor", e.target.value)} style={{
+                    padding: "10px", borderRadius: "8px", border: "1px solid var(--border)", width: "100%", fontSize: "14px"
+                  }}>
+                    <option value="balanced">Balanced / mixed</option>
+                    <option value="advanced">Honors / AP / advanced</option>
+                  </select>
+                </label>
+                <label>
+                  <span style={{ fontSize: "13px", fontWeight: "600", marginBottom: "8px", display: "block" }}>RG Drage?</span>
+                  <select value={state.rgDrage} onChange={e => set("rgDrage", e.target.value)} style={{
+                    padding: "10px", borderRadius: "8px", border: "1px solid var(--border)", width: "100%", fontSize: "14px"
+                  }}>
+                    <option value="no">No / staying in high school</option>
+                    <option value="yes">Yes / planning to attend</option>
+                    <option value="maybe">Maybe / still deciding</option>
+                  </select>
+                </label>
+              </div>
+              <div className="nav-buttons no-print">
+                <button className="btn" onClick={back}>Back</button>
+                <button className="btn primary" onClick={next}>Continue</button>
+              </div>
+            </div>
+          )}
+
+          {current === "interests" && (
+            <div className="page fade-in">
+              <div className="page-header">
+                <h2>Pick up to five interests</h2>
+                <p>Choose what excites you. This helps us customize the recommendation even more.</p>
+              </div>
+              <div className="grid grid3">
+                {interests.map(item => (
+                  <button
+                    key={item.id}
+                    className={`option ${state.interests.includes(item.id) ? "selected" : ""}`}
+                    onClick={() => toggleInterest(item.id)}
+                  >
+                    <span className="option-icon">{item.icon}</span>
+                    <p>{item.label}</p>
+                  </button>
+                ))}
+              </div>
+              <div className="nav-buttons no-print">
+                <button className="btn" onClick={back}>Back</button>
+                <button className="btn primary" onClick={next}>Continue</button>
+              </div>
+            </div>
+          )}
+
+          {current === "courses" && (
+            <div className="page fade-in">
+              <div className="page-header">
+                <h2>Choose your courses</h2>
+                <p>Select the course you want for each grade. Recommended selections fill in if you don't pick.</p>
+              </div>
+              <div className="warning">
+                <strong>Course rule:</strong> Organic Chemistry is 12th grade only. Students in 11th grade can choose RG Drage or stay at high school for expanded options.
+              </div>
+              <div className="grid" style={{ marginTop: "24px" }}>
+                {visibleCourseGrades.map(g => (
+                  <div key={g} className="card">
+                    <h3>{g}th Grade Options</h3>
+                    <p style={{ marginBottom: "16px" }}>Select one course for this grade:</p>
+                    <div className="course-grid">
+                      {gradeCourses[g].map(c => {
+                        const selected = (state.selectedCourses[g] || []).includes(c.id);
+                        const locked = c.id === "rgDrage" && g !== 11;
+                        return (
+                          <button
+                            key={c.id}
+                            className={`course-card ${selected ? "selected" : ""} ${locked ? "locked" : ""}`}
+                            onClick={() => !locked && toggleCourse(g, c.id)}
+                            style={{ opacity: locked ? 0.5 : 1, cursor: locked ? "not-allowed" : "pointer" }}
+                          >
+                            <h4>{c.name}</h4>
+                            <p>{c.desc}</p>
+                            <div className="course-meta">
+                              {renderBadge("blue", c.level)}
+                              {renderBadge("purple", c.area)}
+                              {c.id === "organicChem" && renderBadge("green", "12th only")}
+                            </div>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div className="nav-buttons no-print">
+                <button className="btn" onClick={back}>Back</button>
+                <button className="btn primary" onClick={next}>Build my plan</button>
+              </div>
+            </div>
+          )}
+
+          {current === "results" && (
+            <div className="page fade-in">
+              <div className="page-header">
+                <h2>Your recommended science pathway</h2>
+                <p>Based on your grade, goal, and interests: <strong>{selectedGoal.title}</strong></p>
+              </div>
+
+              <div className="pathway-grid">
+                <div className="pathway-summary">
+                  <div className="pathway-header">
+                    <div className="pathway-icon">{plan.path.icon}</div>
+                    <div>
+                      <h3 className="pathway-title">{plan.path.title}</h3>
+                      <p className="pathway-desc">{plan.path.summary}</p>
+                    </div>
+                  </div>
+
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: "8px", marginBottom: "20px" }}>
+                    {plan.path.tags.map(t => <span key={t} className="tag" style={{ background: "var(--blueSoft)", borderColor: "var(--blue)" }}>{t}</span>)}
+                  </div>
+
+                  <h4 style={{ marginTop: "20px", marginBottom: "12px" }}>Your course sequence</h4>
+                  <div className="course-sequence">
+                    {plan.rows.map((r, i) => (
+                      <div className="sequence-item" key={i + r.id}>
+                        <div className="sequence-grade">Grade {r.grade}</div>
+                        <div className="sequence-course">
+                          <h4>{r.name}</h4>
+                          <p>{r.desc}</p>
+                          <div className="meta">
+                            <span>{r.level}</span>
+                            <span>{r.area}</span>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <div className="card">
+                    <h3>Why this path</h3>
+                    <div className="checklist">
+                      {plan.path.advice.map((a, i) => (
+                        <div key={i} className="checklist-item">{a}</div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="card" style={{ marginTop: "16px" }}>
+                    <h4>Example colleges</h4>
+                    <div className="resource-list">
+                      {plan.path.colleges.map(c => <li key={c}>{c}</li>)}
+                    </div>
+                  </div>
+
+                  <div className="card" style={{ marginTop: "16px" }}>
+                    <h4>Career examples</h4>
+                    <div className="resource-list">
+                      {plan.path.careers.map(c => <li key={c}>{c}</li>)}
+                    </div>
+                  </div>
+
+                  <div className="tip" style={{ marginTop: "16px" }}>
+                    <strong>Print-friendly:</strong> Click "Print plan" to save or print this pathway as a PDF.
+                  </div>
+                </div>
+              </div>
+
+              <div className="section-divider" style={{ marginTop: "40px" }}></div>
+
+              <div style={{ marginTop: "32px" }}>
+                <h3 style={{ marginBottom: "16px" }}>All seven pathways</h3>
+                <div className="resource-grid">
+                  {Object.entries(pathways).map(([id, p]) => (
+                    <div className="resource-card" key={id}>
+                      <h4>{p.icon} {p.title}</h4>
+                      <p>{p.summary}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="warning" style={{ marginTop: "32px" }}>
+                <strong>Final check:</strong> Confirm graduation requirements, prerequisites, course availability, and counselor recommendations before finalizing course requests.
+              </div>
+
+              <div className="nav-buttons no-print" style={{ marginTop: "32px" }}>
+                <button className="btn" onClick={() => setStep(1)}>Edit answers</button>
+                <button className="btn primary" onClick={() => window.print()}>Print / Save</button>
+              </div>
+            </div>
+          )}
+
+          <footer style={{ textAlign: "center", color: "var(--muted)", fontSize: "12px", marginTop: "48px", paddingTop: "24px", borderTop: "1px solid var(--border)" }} className="no-print">
+            <p>Customize course descriptions and graduation requirements to match your school's official documents.</p>
+          </footer>
+        </div>
+      </div>;
+    }
+
+    ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+  </script>
+</body>
+</html>
